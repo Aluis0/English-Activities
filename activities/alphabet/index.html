@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alfabeto Divertido</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #003366;
+        --secondary: #f5f5f5;
+        --accent: #ddc164;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, var(--primary), #004080);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        z-index: 0;
+      }
+
+      .titulo-alfabeto {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        color: var(--primary);
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        position: relative;
+        z-index: 1;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .titulo-alfabeto::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: var(--accent);
+        border-radius: 2px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.75rem;
+      }
+
+      @media (max-width: 1024px) {
+        .grid {
+          grid-template-columns: repeat(5, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .letter-card {
+        width: 100%;
+        aspect-ratio: 1;
+        max-width: 80px;
+        padding: 0.5rem !important;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 51, 102, 0.1);
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .letter-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 51, 102, 0.15);
+      }
+
+      .letter-card.active {
+        background: var(--primary);
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 8px 25px rgba(0, 51, 102, 0.3);
+        border-color: var(--accent);
+      }
+
+      .letter-card.active .play-button {
+        background: white;
+        color: var(--primary);
+      }
+      .play-button {
+        background: linear-gradient(135deg, var(--accent), #e6c980);
+        transition: all 0.3s ease;
+        width: 32px;
+        height: 32px;
+        padding: 0.25rem !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .play-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px -2px rgba(221, 193, 100, 0.3);
+      }
+      .play-button svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .controls-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 20px;
+      }
+
+      .main-button {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 15px rgba(0, 51, 102, 0.2);
+      }
+
+      .main-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 51, 102, 0.25);
+      }
+
+      .main-button:active {
+        transform: translateY(0);
+      }
+
+      .main-button .material-icons {
+        font-size: 1.25rem;
+      }
+
+      .main-button[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .control-button {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .control-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: -1000px 0;
+        }
+        100% {
+          background-position: 1000px 0;
+        }
+      }
+    </style>
+  </head>
+  <body class="selection:bg-blue-300 selection:text-white">
+    <div class="min-h-screen flex items-center justify-center p-4">
+      <div
+        class="relative z-10 bg-white/90 backdrop-blur-md p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl max-w-4xl w-full mx-auto"
+      >
+        <h1 class="titulo-alfabeto text-center mb-4">Alfabeto Interativo</h1>
+
+        <div
+          class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-2 mb-6"
+          style="justify-items: center"
+        >
+          <!-- As letras serão geradas aqui pelo JavaScript -->
+        </div>
+        <div class="flex justify-center gap-3 mt-4">
+          <button id="playPauseBtn" class="main-button">
+            <span id="playPauseIcon" class="material-icons">play_arrow</span>
+            <span id="playPauseText">Ouvir o Alfabeto Completo</span>
+          </button>
+          <button id="backBtn" class="main-button hidden">
+            <span class="material-icons">skip_previous</span>
+            Voltar letra
+          </button>
+          <button id="stopBtn" class="main-button hidden">
+            <span class="material-icons">stop</span>
+            Parar
+          </button>
+        </div>
+
+        <div
+          id="noSupportMessage"
+          class="hidden mt-6 bg-red-100/80 backdrop-blur border border-red-400 text-red-700 px-4 py-3 rounded-lg relative"
+          role="alert"
+        >
+          <strong class="font-bold">Oops!</strong>
+          <span class="block sm:inline"
+            >Seu navegador pode não suportar a síntese de fala. Tente com outro
+            navegador (como Chrome ou Edge).</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Array com todas as letras do alfabeto inglês
+      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      const alphabetContainer = document.querySelector(".grid");
+      const playPauseBtn = document.getElementById("playPauseBtn");
+      const playPauseIcon = document.getElementById("playPauseIcon");
+      const playPauseText = document.getElementById("playPauseText");
+      const stopBtn = document.getElementById("stopBtn");
+      const backBtn = document.getElementById("backBtn");
+      const loadingDots = document.getElementById("loadingDots");
+      const noSupportMessage = document.getElementById("noSupportDots");
+      let isPlaying = false;
+      let isPaused = false;
+      let resumeResolve = null;
+      let stopRequested = false;
+      let currentIndex = 0;
+      let backRequested = false;
+      let currentAudio = null;
+
+      // Função para reproduzir áudio ou usar fallback de síntese de voz
+      async function playLetterSound(letter) {
+        return new Promise((resolve) => {
+          const audioPath = `audio/${letter.toLowerCase()}.mp3`;
+          const audio = new Audio(audioPath);
+
+          audio.onerror = async () => {
+            // Fallback para síntese de voz se o arquivo de áudio não existir
+            if ("speechSynthesis" in window) {
+              const utterance = new SpeechSynthesisUtterance(letter);
+              utterance.lang = "en-US";
+              utterance.volume = 1;
+              utterance.rate = 1;
+              utterance.pitch = 1;
+
+              let selectedVoice = voices.find(
+                (voice) =>
+                  voice.lang.includes("pt") || voice.lang.includes("en")
+              );
+              if (selectedVoice) {
+                utterance.voice = selectedVoice;
+              }
+
+              speechSynthesis.cancel();
+              utterance.onend = resolve;
+              setTimeout(() => {
+                speechSynthesis.speak(utterance);
+              }, 50);
+            } else {
+              resolve();
+            }
+          };
+
+          audio.onended = resolve;
+          audio.play().catch(() => {
+            // Se houver erro ao reproduzir o áudio, usa fallback
+            audio.onerror();
+          });
+          currentAudio = audio;
+        });
+      }
+
+      // Verifica se a API de síntese de fala é suportada pelo navegador
+      if ("speechSynthesis" in window) {
+        // Inicializa as vozes assim que o script carregar
+        let voices = [];
+        function initVoices() {
+          voices = speechSynthesis.getVoices();
+          if (voices.length === 0) {
+            speechSynthesis.onvoiceschanged = () => {
+              voices = speechSynthesis.getVoices();
+            };
+          }
+        }
+        initVoices();
+
+        // Função para gerar e falar o áudio de uma letra
+        async function speakLetter(letter) {
+          // Remove a classe active de todos os cards
+          document.querySelectorAll(".letter-card").forEach((card) => {
+            card.classList.remove("active");
+          });
+
+          // Adiciona a classe active ao card atual
+          const currentCard = document.querySelector(
+            `.letter-card[data-letter="${letter}"]`
+          );
+          if (currentCard) {
+            currentCard.classList.add("active");
+          }
+
+          // Para qualquer áudio que esteja tocando
+          if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+          }
+          speechSynthesis.cancel();
+
+          // Toca o som da letra
+          await playLetterSound(letter);
+
+          // Remove a classe active quando terminar
+          if (currentCard) {
+            currentCard.classList.remove("active");
+          }
+        }
+
+        // Mapeamento de cores vibrantes e sólidas para cada letra
+        const letterColors = [
+          "#FF6B6B", // Vermelho Claro
+          "#FFD93D", // Amarelo Vivo
+          "#6BCB77", // Verde Brilhante
+          "#4D96FF", // Azul Elétrico
+          "#AF7AC5", // Roxo Lavanda
+          "#FFA07A", // Salmão Claro
+          "#20B2AA", // Verde Mar Claro
+          "#BA55D3", // Orquídea Média
+          "#87CEEB", // Azul Céu
+          "#EE82EE", // Violeta
+          "#7CFC00", // Verde Grama
+          "#FF69B4", // Rosa Choque
+          "#00CED1", // Turquesa Escuro
+          "#FF4500", // Laranja Avermelhado
+          "#DAA520", // Dourado Envelhecido
+          "#ADFF2F", // Amarelo Esverdeado
+          "#4169E1", // Azul Royal
+          "#8A2BE2", // Azul Violeta
+          "#F08080", // Coral Claro
+          "#2E8B57", // Verde Mar
+          "#9370DB", // Roxo Médio
+          "#FFD700", // Ouro
+          "#800000", // Marrom Escuro
+          "#CD5C5C", // Vermelho Indiano
+          "#4682B4", // Azul Aço
+          "#FF8C00", // Laranja Escuro
+        ];
+
+        // Gera os elementos HTML para cada letra do alfabeto
+        alphabet.forEach((letter, index) => {
+          const letterDiv = document.createElement("div");
+          letterDiv.className = `letter-card p-4 rounded-xl flex flex-col items-center justify-center transition-all`;
+          letterDiv.setAttribute("data-letter", letter); // Adiciona um atributo para identificar a letra
+
+          const letterSpan = document.createElement("span");
+          letterSpan.textContent = letter;
+          letterSpan.className = `letter mb-4`;
+          const playButton = document.createElement("button");
+          playButton.className = `play-button text-white font-bold p-2 rounded-full shadow-md text-sm flex items-center justify-center`;
+          playButton.innerHTML = `<span class="material-icons">play_circle</span>`;
+          playButton.onclick = () => speakLetter(letter);
+
+          letterDiv.appendChild(letterSpan);
+          letterDiv.appendChild(playButton);
+          alphabetContainer.appendChild(letterDiv);
+        });
+
+        // Função para tocar o alfabeto completo sequencialmente usando a síntese de fala
+        async function playAllAlphabet() {          isPlaying = true;
+          isPaused = false;
+          stopRequested = false;
+          backRequested = false;
+          playPauseIcon.textContent = "pause_circle";
+          playPauseText.textContent = "Pausar";
+          stopBtn.classList.remove("hidden");
+          backBtn.classList.remove("hidden");
+          playPauseBtn.disabled = false;
+          stopBtn.disabled = false;
+          backBtn.disabled = false;
+          currentIndex = 0;
+
+          while (currentIndex < alphabet.length) {
+            if (stopRequested) break;
+            if (isPaused) {
+              await new Promise((resolve) => {
+                resumeResolve = resolve;
+              });
+              if (stopRequested) break;
+            }
+            if (backRequested && currentIndex > 0) {
+              currentIndex--;
+              backRequested = false;
+            }
+            const letter = alphabet[currentIndex];
+            await speakLetter(letter);
+            if (!backRequested) currentIndex++;
+          }
+
+          // Reset UI after stop or finish
+          isPlaying = false;
+          isPaused = false;
+          playPauseIcon.textContent = "▶️";
+          playPauseText.textContent = "Ouvir o Alfabeto Completo";
+          stopBtn.classList.add("hidden");
+          backBtn.classList.add("hidden");
+        }
+
+        playPauseBtn.addEventListener("click", async () => {
+          if (!isPlaying) {
+            playAllAlphabet();
+          } else if (!isPaused) {
+            isPaused = true;            playPauseIcon.textContent = "play_circle";
+            playPauseText.textContent = "Continuar";
+          } else {
+            isPaused = false;
+            playPauseIcon.textContent = "⏸️";
+            playPauseText.textContent = "Pausar";
+            if (resumeResolve) {
+              resumeResolve();
+              resumeResolve = null;
+            }
+          }
+        });
+
+        stopBtn.addEventListener("click", () => {
+          stopRequested = true;
+          isPaused = false;
+          if (resumeResolve) {
+            resumeResolve();
+            resumeResolve = null;
+          }
+          // Para qualquer áudio que esteja tocando
+          if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+          }
+          speechSynthesis.cancel();
+          // Remove a classe active de todos os cards
+          document.querySelectorAll(".letter-card").forEach((card) => {
+            card.classList.remove("active");
+          });
+          // Reset UI
+          isPlaying = false;
+          playPauseIcon.textContent = "▶️";
+          playPauseText.textContent = "Ouvir o Alfabeto Completo";
+          stopBtn.classList.add("hidden");
+          backBtn.classList.add("hidden");
+        });
+
+        backBtn.addEventListener("click", () => {
+          if (isPlaying && currentIndex > 0) {
+            backRequested = true;
+            if (resumeResolve) {
+              resumeResolve();
+              resumeResolve = null;
+            }
+          }
+        });
+      } else {
+        // Mostra uma mensagem se a API de síntese de fala não for suportada
+        noSupportMessage.classList.remove("hidden");
+        noSupportMessage.innerHTML = `<strong class="font-bold">Oops!</strong> <span class="block sm:inline">Seu navegador pode não suportar a síntese de fala. Tente com outro navegador (como Chrome ou Edge).</span>`;
+        playPauseBtn.disabled = true;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>English Learning Hub</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main>
+      <div class="hero">
+        <h1>English Learning Hub</h1>
+        <p>
+          Aprenda inglês de forma interativa e divertida com nossas atividades
+          cuidadosamente desenvolvidas para maximizar seu aprendizado.
+        </p>
+      </div>
+
+      <div class="container">
+        <div class="activities-grid">
+          <!-- Atividade do Alfabeto -->
+          <a href="activities/alphabet/" class="activity-card">
+            <div class="activity-icon">
+              <span class="material-icons">abc</span>
+            </div>
+            <h3>Alfabeto Interativo</h3>
+            <p>
+              Aprenda a pronúncia correta de cada letra do alfabeto em inglês
+              com feedback em tempo real.
+            </p>
+            <span class="badge badge-new">Novo</span>
+          </a>
+
+          <!-- Atividades Futuras (Em breve) -->
+          <div class="activity-card coming-soon">
+            <div class="activity-icon">
+              <span class="material-icons">record_voice_over</span>
+            </div>
+            <h3>Pronúncia Básica</h3>
+            <p>
+              Pratique os sons fundamentais da língua inglesa com exercícios
+              interativos.
+            </p>
+            <span class="badge badge-soon">Em breve</span>
+          </div>
+
+          <div class="activity-card coming-soon">
+            <div class="activity-icon">
+              <span class="material-icons">menu_book</span>
+            </div>
+            <h3>Vocabulário Essencial</h3>
+            <p>
+              Aprenda as palavras mais comuns do inglês com flashcards
+              interativos.
+            </p>
+            <span class="badge badge-soon">Em breve</span>
+          </div>
+
+          <div class="activity-card coming-soon">
+            <div class="activity-icon">
+              <span class="material-icons">school</span>
+            </div>
+            <h3>Gramática Básica</h3>
+            <p>Domine as estruturas fundamentais da gramática inglesa.</p>
+            <span class="badge badge-soon">Em breve</span>
+          </div>
+
+          <div class="activity-card coming-soon">
+            <div class="activity-icon">
+              <span class="material-icons">chat</span>
+            </div>
+            <h3>Diálogos do Dia a Dia</h3>
+            <p>Pratique conversações comuns em situações cotidianas.</p>
+            <span class="badge badge-soon">Em breve</span>
+          </div>
+
+          <div class="activity-card coming-soon">
+            <div class="activity-icon">
+              <span class="material-icons">music_note</span>
+            </div>
+            <h3>Aprenda com Música</h3>
+            <p>Melhore seu inglês enquanto se diverte com músicas populares.</p>
+            <span class="badge badge-soon">Em breve</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Adicionar animações suaves aos cards quando eles entram na viewport
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = 1;
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        },
+        {
+          threshold: 0.1,
+        }
+      );
+
+      document.querySelectorAll(".activity-card").forEach((card) => {
+        card.style.opacity = 0;
+        card.style.transform = "translateY(20px)";
+        card.style.transition = "all 0.6s ease-out";
+        observer.observe(card);
+      });
+    </script>
+  </body>
+</html>
