@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfabeto Divertido</title>
+    <!-- Inclui o Tailwind CSS para estilização fácil e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilo personalizado para a fonte e algumas animações */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Cor principal: azul marinho sólido, sem gradiente */
+            background-color: #003366; /* Azul Marinho */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Garante que a página ocupe toda a altura da tela */
+            padding: 20px;
+            overflow-x: hidden; /* Evita rolagem horizontal */
+        }
+        .letter-card {
+            transition: transform 0.2s ease-in-out; /* Transição suave para efeito de hover */
+        }
+        .letter-card:hover {
+            transform: scale(1.05); /* Aumenta um pouco ao passar o mouse */
+        }
+        .play-button {
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .play-button:active {
+            transform: scale(0.95); /* Efeito de clique */
+        }
+        .bouncing-dot {
+            animation: bounce 0.6s infinite alternate; /* Animação de "bounce" */
+            opacity: 0;
+            display: inline-block;
+        }
+        .bouncing-dot:nth-child(2) { animation-delay: 0.1s; }
+        .bouncing-dot:nth-child(3) { animation-delay: 0.2s; }
+
+        @keyframes bounce {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-5px); opacity: 1; }
+        }
+        /* As cores das letras serão aplicadas diretamente via JavaScript */
+
+    </style>
+</head>
+<body class="selection:bg-blue-300 selection:text-white">
+    <!-- O fundo do container principal agora usa a cor secundária: #f5f5f5 -->
+    <div class="bg-[#f5f5f5] p-6 md:p-10 rounded-3xl shadow-2xl max-w-4xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-8 animate-bounce-slow">
+            Alfabeto para o João Miguel
+        </h1>
+
+        <!-- Container para o alfabeto -->
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 mb-10">
+            <!-- As letras serão geradas aqui pelo JavaScript -->
+        </div>
+
+        <!-- Botão "Play All" - usando gradiente das cores principal e terceira -->
+        <button id="playAllBtn" class="bg-gradient-to-r from-[#003366] to-[#d5b13d] hover:from-[#d5b13d] hover:to-[#003366] text-white font-bold py-4 px-8 rounded-full shadow-lg text-xl md:text-2xl transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 flex items-center justify-center mx-auto">
+            <svg class="w-8 h-8 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+            </svg>
+            <span id="playAllText">Ouvir o Alfabeto Completo</span>
+            <span id="loadingDots" class="hidden ml-2">
+                <span class="bouncing-dot">.</span>
+                <span class="bouncing-dot">.</span>
+                <span class="bouncing-dot">.</span>
+            </span>
+        </button>
+
+        <!-- Mensagem de suporte para navegadores que não suportam a reprodução de áudio -->
+        <div id="noSupportMessage" class="hidden mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
+            <strong class="font-bold">Oops!</strong>
+            <span class="block sm:inline">Seu navegador pode não suportar a síntese de fala. Tente com outro navegador (como Chrome ou Edge).</span>
+        </div>
+    </div>
+
+    <script>
+        // Array com todas as letras do alfabeto inglês
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        const alphabetContainer = document.querySelector('.grid');
+        const playAllBtn = document.getElementById('playAllBtn');
+        const playAllText = document.getElementById('playAllText');
+        const loadingDots = document.getElementById('loadingDots');
+        const noSupportMessage = document.getElementById('noSupportDots');
+
+        // Verifica se a API de síntese de fala é suportada pelo navegador
+        if ('speechSynthesis' in window) {
+            // Função para gerar e falar o áudio de uma letra
+            function speakLetter(letter) {
+                // Cria uma nova instância de SpeechSynthesisUtterance
+                const utterance = new SpeechSynthesisUtterance(letter);
+                // Define o idioma para inglês americano
+                utterance.lang = 'en-US';
+                // Define o volume (0 a 1)
+                utterance.volume = 1;
+                // Define a taxa de fala (velocidade da voz) para um som mais animado
+                utterance.rate = 1.15; // Um pouco mais rápido e animado
+                // Define o tom (altura da voz) para um som mais animado
+                utterance.pitch = 1.3; // Um tom um pouco mais alto e mais "criança"
+
+                // Encontra uma voz em inglês americano que não seja a padrão ou já usada
+                // Prioriza vozes comumente usadas para fala sintética infantil ou clara,
+                // tentando encontrar uma que não seja a "Google US English" se outras estiverem disponíveis.
+                const voices = speechSynthesis.getVoices();
+                let englishVoice = voices.find(voice =>
+                    voice.lang === 'en-US' &&
+                    (voice.name.includes('Alex') || voice.name.includes('Good News') || voice.name.includes('Daniel') || voice.name.includes('Karen') || voice.name.includes('Samantha'))
+                );
+
+                // Se as vozes acima não forem encontradas, tenta a "Google US English" como fallback
+                if (!englishVoice) {
+                    englishVoice = voices.find(voice =>
+                        voice.lang === 'en-US' && voice.name.includes('Google US English')
+                    );
+                }
+
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                } else {
+                    // Se nenhuma voz específica for encontrada, o navegador usará a voz padrão para 'en-US'.
+                    console.warn("Nenhuma voz específica em inglês americano encontrada. Usando a voz padrão do navegador.");
+                }
+
+                // Dispara a fala
+                speechSynthesis.speak(utterance);
+            }
+
+            // Mapeamento de cores vibrantes e sólidas para cada letra
+            const letterColors = [
+                '#FF6B6B', // Vermelho Claro
+                '#FFD93D', // Amarelo Vivo
+                '#6BCB77', // Verde Brilhante
+                '#4D96FF', // Azul Elétrico
+                '#AF7AC5', // Roxo Lavanda
+                '#FFA07A', // Salmão Claro
+                '#20B2AA', // Verde Mar Claro
+                '#BA55D3', // Orquídea Média
+                '#87CEEB', // Azul Céu
+                '#EE82EE', // Violeta
+                '#7CFC00', // Verde Grama
+                '#FF69B4', // Rosa Choque
+                '#00CED1', // Turquesa Escuro
+                '#FF4500', // Laranja Avermelhado
+                '#DAA520', // Dourado Envelhecido
+                '#ADFF2F', // Amarelo Esverdeado
+                '#4169E1', // Azul Royal
+                '#8A2BE2', // Azul Violeta
+                '#F08080', // Coral Claro
+                '#2E8B57', // Verde Mar
+                '#9370DB', // Roxo Médio
+                '#FFD700', // Ouro
+                '#800000', // Marrom Escuro
+                '#CD5C5C', // Vermelho Indiano
+                '#4682B4', // Azul Aço
+                '#FF8C00'  // Laranja Escuro
+            ];
+
+            // Gera os elementos HTML para cada letra do alfabeto
+            alphabet.forEach((letter, index) => {
+                const letterDiv = document.createElement('div');
+                letterDiv.className = `letter-card bg-white p-4 rounded-xl shadow-md flex flex-col items-center justify-center border-2 border-gray-100`;
+
+                const letterSpan = document.createElement('span');
+                letterSpan.textContent = letter;
+                // Aplica uma cor vibrante diferente a cada letra diretamente no estilo
+                letterSpan.className = `font-extrabold text-5xl mb-2`;
+                letterSpan.style.color = letterColors[index % letterColors.length]; // Usa o módulo para repetir as cores se necessário
+
+                const playButton = document.createElement('button');
+                // Botões individuais de "Ouvir" usam a cor dourada
+                playButton.className = `play-button bg-[#d5b13d] hover:bg-opacity-80 text-white font-bold py-2 px-4 rounded-full shadow-md text-sm transition duration-200 ease-in-out flex items-center justify-center`;
+                playButton.innerHTML = `<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg> Ouvir`;
+                playButton.onclick = () => speakLetter(letter); // Atribui a função de áudio ao clique do botão
+
+                letterDiv.appendChild(letterSpan);
+                letterDiv.appendChild(playButton);
+                alphabetContainer.appendChild(letterDiv);
+            });
+
+            // Função para tocar o alfabeto completo sequencialmente usando a síntese de fala
+            async function playAllAlphabet() {
+                playAllBtn.disabled = true; // Desabilita o botão enquanto o áudio está tocando
+                playAllText.textContent = 'Carregando...'; // Muda o texto do botão
+                loadingDots.classList.remove('hidden'); // Mostra os pontinhos de carregamento
+
+                for (let i = 0; i < alphabet.length; i++) {
+                    const letter = alphabet[i];
+                    speakLetter(letter); // Fala a letra atual
+
+                    // Espera a fala terminar antes de passar para a próxima letra
+                    await new Promise(resolve => {
+                        const checkSpeechEnd = setInterval(() => {
+                            if (!speechSynthesis.speaking) {
+                                clearInterval(checkSpeechEnd);
+                                resolve();
+                            }
+                        }, 100); // Verifica a cada 100ms
+                    });
+                }
+
+                playAllBtn.disabled = false; // Reabilita o botão
+                playAllText.textContent = 'Ouvir o Alfabeto Completo'; // Restaura o texto do botão
+                loadingDots.classList.add('hidden'); // Esconde os pontinhos de carregamento
+            }
+
+            // Atribui a função playAllAlphabet ao clique do botão "Play All"
+            playAllBtn.addEventListener('click', playAllAlphabet);
+
+        } else {
+            // Mostra uma mensagem se a API de síntese de fala não for suportada
+            noSupportMessage.classList.remove('hidden');
+            noSupportMessage.innerHTML = `<strong class="font-bold">Oops!</strong> <span class="block sm:inline">Seu navegador pode não suportar a síntese de fala. Tente com outro navegador (como Chrome ou Edge).</span>`;
+            playAllBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>
