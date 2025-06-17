@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>English Ordinal Numbers</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-title">English Ordinal Numbers</div>
+    </header>
+    <main id="main-content">
+      <!-- Seção de aprendizado visual/auditivo -->
+      <section class="section" aria-labelledby="ordinals-title">
+        <div class="section-title" id="ordinals-title">
+          Ordinals 1st to 20th
+          <button
+            class="audio-btn"
+            id="play-all-ordinals"
+            aria-label="Play all ordinals 1st to 20th"
+            style="margin-left: 1rem; vertical-align: middle"
+          >
+            <span
+              style="
+                display: inline-block;
+                width: 2rem;
+                height: 2rem;
+                background: var(--primary);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+              ><svg
+                width="20"
+                height="20"
+                viewBox="0 0 28 28"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="9"
+                  fill="#fff"
+                  stroke="#003466"
+                  stroke-width="2"
+                />
+                <polygon points="8,6 16,10 8,14" fill="#003466" /></svg
+            ></span>
+          </button>
+        </div>
+        <div class="numbers-grid" id="ordinals-learn-grid"></div>
+      </section>
+      <section class="section" aria-labelledby="ordinals-tens-title">
+        <div class="section-title" id="ordinals-tens-title">
+          Tens: 30th to 90th
+          <button
+            class="audio-btn"
+            id="play-all-ordinals-tens"
+            aria-label="Play all ordinal tens"
+            style="margin-left: 1rem; vertical-align: middle"
+          >
+            <span
+              style="
+                display: inline-block;
+                width: 2rem;
+                height: 2rem;
+                background: var(--primary);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+              ><svg
+                width="20"
+                height="20"
+                viewBox="0 0 28 28"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="9"
+                  fill="#fff"
+                  stroke="#003466"
+                  stroke-width="2"
+                />
+                <polygon points="8,6 16,10 8,14" fill="#003466" /></svg
+            ></span>
+          </button>
+        </div>
+        <div class="numbers-grid" id="ordinals-tens-grid"></div>
+      </section>
+      <section class="section" aria-labelledby="ordinals-special-title">
+        <div class="section-title" id="ordinals-special-title">
+          Special Ordinals
+          <button
+            class="audio-btn"
+            id="play-all-ordinals-special"
+            aria-label="Play all special ordinals"
+            style="margin-left: 1rem; vertical-align: middle"
+          >
+            <span
+              style="
+                display: inline-block;
+                width: 2rem;
+                height: 2rem;
+                background: var(--primary);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+              ><svg
+                width="20"
+                height="20"
+                viewBox="0 0 28 28"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="9"
+                  fill="#fff"
+                  stroke="#003466"
+                  stroke-width="2"
+                />
+                <polygon points="8,6 16,10 8,14" fill="#003466" /></svg
+            ></span>
+          </button>
+        </div>
+        <div class="numbers-grid" id="ordinals-special-grid"></div>
+      </section>
+    </main>
+    <!-- Atividade: Ouça e escreva o ordinal -->
+    <section class="section" aria-labelledby="write-title">
+      <div class="section-title" id="write-title">
+        Write the Ordinal You Hear
+      </div>
+      <div class="quiz-box" id="write-quiz-box">
+        <div style="margin-bottom: 0.7rem">
+          <label
+            for="write-quiz-max"
+            style="font-size: 1rem; color: #003466; font-weight: 500"
+            >Max number:&nbsp;</label
+          >
+          <input
+            id="write-quiz-max"
+            type="number"
+            min="1"
+            max="100"
+            value="20"
+            style="
+              width: 100px;
+              font-size: 1rem;
+              padding: 0.2rem 0.5rem;
+              border-radius: 0.4rem;
+              border: 1.5px solid #003466;
+            "
+            aria-label="Set maximum number"
+          />
+        </div>
+        <button
+          class="audio-btn"
+          id="play-random-audio"
+          aria-label="Play random ordinal audio"
+        >
+          <span
+            style="
+              display: inline-block;
+              width: 2.5rem;
+              height: 2.5rem;
+              background: linear-gradient(135deg, #003466 60%, #f5f5f5 100%);
+              border-radius: 50%;
+              box-shadow: 0 2px 8px #00346622;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: background 0.2s;
+            "
+            ><svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="14"
+                cy="14"
+                r="13"
+                fill="#fff"
+                stroke="#003466"
+                stroke-width="2"
+              />
+              <polygon points="11,9 20,14 11,19" fill="#003466" /></svg
+          ></span>
+        </button>
+        <input
+          class="typing-input"
+          id="write-quiz-input"
+          type="text"
+          aria-label="Type the ordinal you heard"
+          placeholder="Type the ordinal... (e.g. 1st, 2nd, 3rd)"
+        />
+        <button class="typing-next-btn" id="write-quiz-submit">Check</button>
+        <div class="typing-feedback" id="write-quiz-feedback"></div>
+        <button
+          class="typing-next-btn"
+          id="write-quiz-next"
+          style="display: none"
+        >
+          Next
+        </button>
+      </div>
+    </section>
+    <script src="ordinals.js"></script>
+  </body>
+</html>

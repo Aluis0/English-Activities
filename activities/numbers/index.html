@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>English Numbers</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-title">English Numbers</div>
+    </header>
+    <main id="main-content">
+      <!-- Seção de aprendizado visual/auditivo -->
+      <section class="section" aria-labelledby="learn-title">
+        <div class="section-title" id="learn-title">
+          Numbers 1 to 20
+          <div
+            class="boton-audio"
+            id="play-all-numbers"
+            tabindex="0"
+            aria-label="Play all numbers 1 to 20"
+          >
+            <div class="fondo"></div>
+            <div class="icono">
+              <div class="parte izquierda"></div>
+              <div class="parte derecha"></div>
+            </div>
+            <div class="puntero"></div>
+          </div>
+        </div>
+        <div class="numbers-grid" id="numbers-learn-grid"></div>
+      </section>
+      <section class="section" aria-labelledby="tens-title">
+        <div class="section-title" id="tens-title">
+          Tens: 30 to 90
+          <div
+            class="boton-audio"
+            id="play-all-tens"
+            tabindex="0"
+            aria-label="Play all tens"
+          >
+            <div class="fondo"></div>
+            <div class="icono">
+              <div class="parte izquierda"></div>
+              <div class="parte derecha"></div>
+            </div>
+            <div class="puntero"></div>
+          </div>
+        </div>
+        <div class="numbers-grid" id="numbers-tens-grid"></div>
+      </section>
+      <section class="section" aria-labelledby="special-title">
+        <div class="section-title" id="special-title">
+          Special Numbers
+          <div
+            class="boton-audio"
+            id="play-all-special"
+            tabindex="0"
+            aria-label="Play all special numbers"
+          >
+            <div class="fondo"></div>
+            <div class="icono">              <div class="parte izquierda"></div>
+              <div class="parte derecha"></div>
+            </div>
+            <div class="puntero"></div>
+          </div>
+        </div>
+        <div class="numbers-grid" id="numbers-special-grid"></div>
+      </section>
+    </main>
+    <!-- Atividade: Ouça e escreva o número -->
+    <section class="section" aria-labelledby="write-title">
+      <div class="section-title" id="write-title">
+        Write the Number You Hear
+      </div>
+      <div class="quiz-box" id="write-quiz-box">
+        <div style="margin-bottom: 0.7rem">
+          <label
+            for="write-quiz-max"
+            style="font-size: 1rem; color: #22325a; font-weight: 500"
+            >Max number:&nbsp;</label
+          >
+          <input
+            id="write-quiz-max"
+            type="number"
+            min="1"
+            max="5000"
+            value="50000"
+            style="
+              width: 100px;
+              font-size: 1rem;
+              padding: 0.2rem 0.5rem;
+              border-radius: 0.4rem;
+              border: 1.5px solid #a5b4fc;
+            "
+            aria-label="Set maximum number"
+          />
+        </div>
+        <button
+          class="audio-btn"
+          id="play-random-audio"
+          aria-label="Play random number audio"
+        >
+          <span
+            ><svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="14"
+                cy="14"
+                r="13"
+                fill="#fff"
+                stroke="#003466"
+                stroke-width="2"
+              />
+              <polygon points="11,9 20,14 11,19" fill="#003466" /></svg
+          ></span>
+        </button>
+        <input
+          class="typing-input"
+          id="write-quiz-input"
+          type="number"
+          min="1"
+          aria-label="Type the number you heard"
+          placeholder="Type the number..."
+        />
+        <button class="typing-next-btn" id="write-quiz-submit">Check</button>
+        <div class="typing-feedback" id="write-quiz-feedback"></div>
+        <button
+          class="typing-next-btn"
+          id="write-quiz-next"
+          style="display: none"
+        >
+          Next
+        </button>
+      </div>
+    </section>
+    <script src="script.js"></script>
+  </body>
+</html>

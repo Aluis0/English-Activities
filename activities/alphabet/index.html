@@ -199,6 +199,26 @@
         transform: translateY(-2px);
       }
 
+      .speed-btn {
+        transition: all 0.3s ease;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        color: var(--primary);
+        border: 1px solid transparent;
+      }
+
+      .speed-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px -2px rgba(221, 193, 100, 0.3);
+      }
+
+      .speed-btn.active {
+        background: var(--primary) !important;
+        color: #fff !important;
+        box-shadow: 0 2px 8px rgba(0, 51, 102, 0.15);
+      }
+
       @keyframes shimmer {
         0% {
           background-position: -1000px 0;
@@ -216,25 +236,42 @@
       >
         <h1 class="titulo-alfabeto text-center mb-4">Alfabeto Interativo</h1>
 
+        <div class="flex justify-end mb-2">
+          <button id="themeToggleBtn" class="main-button" title="Alternar tema">
+            <span class="material-icons">palette</span>
+            <span id="themeToggleText">Tema Kids</span>
+          </button>
+        </div>
+
         <div
           class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-2 mb-6"
           style="justify-items: center"
         >
           <!-- As letras serão geradas aqui pelo JavaScript -->
         </div>
-        <div class="flex justify-center gap-3 mt-4">
-          <button id="playPauseBtn" class="main-button">
-            <span id="playPauseIcon" class="material-icons">play_arrow</span>
-            <span id="playPauseText">Ouvir o Alfabeto Completo</span>
-          </button>
-          <button id="backBtn" class="main-button hidden">
-            <span class="material-icons">skip_previous</span>
-            Voltar letra
-          </button>
-          <button id="stopBtn" class="main-button hidden">
-            <span class="material-icons">stop</span>
-            Parar
-          </button>
+        <div class="flex flex-col items-center gap-3 mt-4">
+          <div class="flex justify-center gap-3">
+            <button id="playPauseBtn" class="main-button">
+              <span id="playPauseIcon" class="material-icons">play_arrow</span>
+              <span id="playPauseText">Ouvir o Alfabeto Completo</span>
+            </button>
+            <button id="backBtn" class="main-button hidden">
+              <span class="material-icons">skip_previous</span>
+              Voltar letra
+            </button>
+            <button id="stopBtn" class="main-button hidden">
+              <span class="material-icons">stop</span>
+              Parar
+            </button>
+          </div>
+          <div class="flex items-center gap-3 mt-2 bg-white/80 px-4 py-2 rounded-lg shadow-sm">
+            <span class="text-primary font-semibold text-lg">Velocidade:</span>
+            <div class="flex gap-2">
+              <button id="speed1x" class="speed-btn px-3 py-1 rounded-lg bg-white text-primary font-medium shadow-sm border border-primary">1x</button>
+              <button id="speed125x" class="speed-btn px-3 py-1 rounded-lg bg-white/80 text-primary font-medium border border-primary">1.25x</button>
+              <button id="speed15x" class="speed-btn px-3 py-1 rounded-lg bg-white/80 text-primary font-medium border border-primary">1.5x</button>
+            </div>
+          </div>
         </div>
 
         <div
@@ -269,12 +306,14 @@
       let currentIndex = 0;
       let backRequested = false;
       let currentAudio = null;
+      let currentSpeed = 1;
 
       // Função para reproduzir áudio ou usar fallback de síntese de voz
       async function playLetterSound(letter) {
         return new Promise((resolve) => {
           const audioPath = `audio/${letter.toLowerCase()}.mp3`;
           const audio = new Audio(audioPath);
+          audio.playbackRate = currentSpeed;
 
           audio.onerror = async () => {
             // Fallback para síntese de voz se o arquivo de áudio não existir
@@ -282,7 +321,7 @@
               const utterance = new SpeechSynthesisUtterance(letter);
               utterance.lang = "en-US";
               utterance.volume = 1;
-              utterance.rate = 1;
+              utterance.rate = currentSpeed;
               utterance.pitch = 1;
 
               let selectedVoice = voices.find(
@@ -357,36 +396,6 @@
           }
         }
 
-        // Mapeamento de cores vibrantes e sólidas para cada letra
-        const letterColors = [
-          "#FF6B6B", // Vermelho Claro
-          "#FFD93D", // Amarelo Vivo
-          "#6BCB77", // Verde Brilhante
-          "#4D96FF", // Azul Elétrico
-          "#AF7AC5", // Roxo Lavanda
-          "#FFA07A", // Salmão Claro
-          "#20B2AA", // Verde Mar Claro
-          "#BA55D3", // Orquídea Média
-          "#87CEEB", // Azul Céu
-          "#EE82EE", // Violeta
-          "#7CFC00", // Verde Grama
-          "#FF69B4", // Rosa Choque
-          "#00CED1", // Turquesa Escuro
-          "#FF4500", // Laranja Avermelhado
-          "#DAA520", // Dourado Envelhecido
-          "#ADFF2F", // Amarelo Esverdeado
-          "#4169E1", // Azul Royal
-          "#8A2BE2", // Azul Violeta
-          "#F08080", // Coral Claro
-          "#2E8B57", // Verde Mar
-          "#9370DB", // Roxo Médio
-          "#FFD700", // Ouro
-          "#800000", // Marrom Escuro
-          "#CD5C5C", // Vermelho Indiano
-          "#4682B4", // Azul Aço
-          "#FF8C00", // Laranja Escuro
-        ];
-
         // Gera os elementos HTML para cada letra do alfabeto
         alphabet.forEach((letter, index) => {
           const letterDiv = document.createElement("div");
@@ -395,7 +404,38 @@
 
           const letterSpan = document.createElement("span");
           letterSpan.textContent = letter;
-          letterSpan.className = `letter mb-4`;
+          letterSpan.className = `letter mb-4 font-extrabold text-5xl`;
+          // Aplica cor vibrante igual ao The_Alphabet.html
+          const letterColors = [
+            "#FF6B6B", // Vermelho Claro
+            "#FFD93D", // Amarelo Vivo
+            "#6BCB77", // Verde Brilhante
+            "#4D96FF", // Azul Elétrico
+            "#AF7AC5", // Roxo Lavanda
+            "#FFA07A", // Salmão Claro
+            "#20B2AA", // Verde Mar Claro
+            "#BA55D3", // Orquídea Média
+            "#87CEEB", // Azul Céu
+            "#EE82EE", // Violeta
+            "#7CFC00", // Verde Grama
+            "#FF69B4", // Rosa Choque
+            "#00CED1", // Turquesa Escuro
+            "#FF4500", // Laranja Avermelhado
+            "#DAA520", // Dourado Envelhecido
+            "#ADFF2F", // Amarelo Esverdeado
+            "#4169E1", // Azul Royal
+            "#8A2BE2", // Azul Violeta
+            "#F08080", // Coral Claro
+            "#2E8B57", // Verde Mar
+            "#9370DB", // Roxo Médio
+            "#FFD700", // Ouro
+            "#800000", // Marrom Escuro
+            "#CD5C5C", // Vermelho Indiano
+            "#4682B4", // Azul Aço
+            "#FF8C00", // Laranja Escuro
+          ];
+          letterSpan.style.color = letterColors[index % letterColors.length];
+
           const playButton = document.createElement("button");
           playButton.className = `play-button text-white font-bold p-2 rounded-full shadow-md text-sm flex items-center justify-center`;
           playButton.innerHTML = `<span class="material-icons">play_circle</span>`;
@@ -497,6 +537,64 @@
             }
           }
         });
+
+        // Função para atualizar os botões de velocidade
+        function updateSpeedButtons() {
+          document.querySelectorAll('.speed-btn').forEach(btn => {
+            btn.classList.remove('active');
+          });
+          if (currentSpeed === 1) document.getElementById('speed1x').classList.add('active');
+          if (currentSpeed === 1.25) document.getElementById('speed125x').classList.add('active');
+          if (currentSpeed === 1.5) document.getElementById('speed15x').classList.add('active');
+        }
+
+        // Listeners
+        document.getElementById('speed1x').onclick = () => { currentSpeed = 1; updateSpeedButtons(); if(currentAudio) currentAudio.playbackRate = currentSpeed; };
+        document.getElementById('speed125x').onclick = () => { currentSpeed = 1.25; updateSpeedButtons(); if(currentAudio) currentAudio.playbackRate = currentSpeed; };
+        document.getElementById('speed15x').onclick = () => { currentSpeed = 1.5; updateSpeedButtons(); if(currentAudio) currentAudio.playbackRate = currentSpeed; };
+        updateSpeedButtons();
+
+        // Tema: 'kids' = letras coloridas, 'adults' = cor padrão
+        let currentTheme = 'kids';
+        const letterColors = [
+          "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#AF7AC5", "#FFA07A", "#20B2AA", "#BA55D3", "#87CEEB", "#EE82EE", "#7CFC00", "#FF69B4", "#00CED1", "#FF4500", "#DAA520", "#ADFF2F", "#4169E1", "#8A2BE2", "#F08080", "#2E8B57", "#9370DB", "#FFD700", "#800000", "#CD5C5C", "#4682B4", "#FF8C00"
+        ];
+        const defaultLetterColor = getComputedStyle(document.documentElement).getPropertyValue('--primary') || '#003366';
+
+        function renderAlphabet() {
+          alphabetContainer.innerHTML = '';
+          alphabet.forEach((letter, index) => {
+            const letterDiv = document.createElement("div");
+            letterDiv.className = `letter-card p-4 rounded-xl flex flex-col items-center justify-center transition-all`;
+            letterDiv.setAttribute("data-letter", letter);
+
+            const letterSpan = document.createElement("span");
+            letterSpan.textContent = letter;
+            letterSpan.className = `letter mb-4 font-extrabold text-5xl`;
+            letterSpan.style.color = (currentTheme === 'kids') ? letterColors[index % letterColors.length] : defaultLetterColor;
+
+            const playButton = document.createElement("button");
+            playButton.className = `play-button text-white font-bold p-2 rounded-full shadow-md text-sm flex items-center justify-center`;
+            playButton.innerHTML = `<span class="material-icons">play_circle</span>`;
+            playButton.onclick = () => speakLetter(letter);
+
+            letterDiv.appendChild(letterSpan);
+            letterDiv.appendChild(playButton);
+            alphabetContainer.appendChild(letterDiv);
+          });
+        }
+
+        // Substitui chamada anterior por chamada da função
+        renderAlphabet();
+
+        // Botão de alternância de tema
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeToggleText = document.getElementById('themeToggleText');
+        themeToggleBtn.onclick = () => {
+          currentTheme = (currentTheme === 'kids') ? 'adults' : 'kids';
+          themeToggleText.textContent = currentTheme === 'kids' ? 'Tema Kids' : 'Tema Adults';
+          renderAlphabet();
+        };
       } else {
         // Mostra uma mensagem se a API de síntese de fala não for suportada
         noSupportMessage.classList.remove("hidden");
