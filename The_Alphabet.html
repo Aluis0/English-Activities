@@ -14,43 +14,75 @@
             /* Cor principal: azul marinho sólido, sem gradiente */
             background-color: #003366; /* Azul Marinho */
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
             min-height: 100vh; /* Garante que a página ocupe toda a altura da tela */
-            padding: 20px;
+            padding: 0;
+            margin: 0;
             overflow-x: hidden; /* Evita rolagem horizontal */
         }
-        .letter-card {
-            transition: transform 0.2s ease-in-out; /* Transição suave para efeito de hover */
+        header {
+            background-color: #ffffff;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .letter-card:hover {
-            transform: scale(1.05); /* Aumenta um pouco ao passar o mouse */
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .play-button {
-            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
         }
-        .play-button:active {
-            transform: scale(0.95); /* Efeito de clique */
+        .nav-links a {
+            text-decoration: none;
+            color: #003366;
+            font-weight: 500;
+            transition: color 0.3s;
         }
-        .bouncing-dot {
-            animation: bounce 0.6s infinite alternate; /* Animação de "bounce" */
-            opacity: 0;
-            display: inline-block;
+        .nav-links a:hover {
+            color: #d5b13d;
         }
-        .bouncing-dot:nth-child(2) { animation-delay: 0.1s; }
-        .bouncing-dot:nth-child(3) { animation-delay: 0.2s; }
-
-        @keyframes bounce {
-            from { transform: translateY(0); opacity: 1; }
-            to { transform: translateY(-5px); opacity: 1; }
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .alphabet-section {
+            /* Estilo para a seção do alfabeto */
+        }
+        footer {
+            background-color: #ffffff;
+            padding: 10px 0;
+            text-align: center;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
         }
         /* As cores das letras serão aplicadas diretamente via JavaScript */
 
     </style>
 </head>
 <body class="selection:bg-blue-300 selection:text-white">
-    <!-- O fundo do container principal agora usa a cor secundária: #f5f5f5 -->
-    <div class="bg-[#f5f5f5] p-6 md:p-10 rounded-3xl shadow-2xl max-w-4xl w-full text-center">
+    <header>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/The_Alphabet.html">The Alphabet</a></li>
+                <li><a href="/activities/numbers/index.html">Numbers</a></li>
+                <li><a href="/activities/numbers/ordinals.html">Ordinals</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
         <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-8 animate-bounce-slow">
             Alfabeto para o João Miguel
         </h1>
@@ -78,7 +110,11 @@
             <strong class="font-bold">Oops!</strong>
             <span class="block sm:inline">Seu navegador pode não suportar a síntese de fala. Tente com outro navegador (como Chrome ou Edge).</span>
         </div>
-    </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 English Activities. All rights reserved.</p>
+    </footer>
 
     <script>
         // Array com todas as letras do alfabeto inglês

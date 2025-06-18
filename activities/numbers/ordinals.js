@@ -296,7 +296,8 @@ function setupWriteQuiz() {
 
     const userAnswer = quizInput.value.trim().toLowerCase();
     const correctAnswer = currentOrdinal.text.toLowerCase();
-    const correctSymbol = currentOrdinal.number + currentOrdinal.text.slice(-2).toLowerCase(); // Exemplo: 1st
+    const correctSymbol =
+      currentOrdinal.number + currentOrdinal.text.slice(-2).toLowerCase(); // Exemplo: 1st
 
     if (userAnswer === correctAnswer || userAnswer === correctSymbol) {
       feedback.textContent = "Correct! 🎉";
