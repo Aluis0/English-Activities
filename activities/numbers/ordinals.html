@@ -3,28 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ordinals - English Activities</title>
+    <title>English Ordinal Numbers</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header>
-      <nav class="navbar">
-        <ul class="nav-links">
-          <li><a href="/index.html">Home</a></li>
-          <li><a href="/The_Alphabet.html">The Alphabet</a></li>
-          <li><a href="/activities/numbers/index.html">Numbers</a></li>
-          <li><a href="/activities/numbers/ordinals.html">Ordinals</a></li>
-        </ul>
-      </nav>
+      <div class="header-title">English Ordinal Numbers</div>
     </header>
-
-    <main>
-      <h1>Learn Ordinal Numbers</h1>
-      <p>Practice ordinal numbers with interactive activities.</p>
+    <main id="main-content">
       <!-- Seção de aprendizado visual/auditivo -->
       <section class="section" aria-labelledby="ordinals-title">
         <div class="section-title" id="ordinals-title">
@@ -45,39 +35,14 @@
         </div>
         <div class="numbers-grid" id="ordinals-learn-grid"></div>
       </section>
-      <!-- Atividade: Ouça e escreva o ordinal -->
-      <section class="section" aria-labelledby="write-title">
-        <div class="section-title" id="write-title">
-          Write the Ordinal You Hear
-        </div>
-        <div class="quiz-box" id="write-quiz-box">
-          <div style="margin-bottom: 0.7rem">
-            <label
-              for="write-quiz-max"
-              style="font-size: 1rem; color: #003466; font-weight: 500"
-              >Max number:&nbsp;</label
-            >
-            <input
-              id="write-quiz-max"
-              type="number"
-              min="1"
-              max="100"
-              value="20"
-              style="
-                width: 100px;
-                font-size: 1rem;
-                padding: 0.2rem 0.5rem;
-                border-radius: 0.4rem;
-                border: 1.5px solid #003466;
-              "
-              aria-label="Set maximum number"
-            />
-          </div>
+      <section class="section" aria-labelledby="ordinals-tens-title">
+        <div class="section-title" id="ordinals-tens-title">
+          Tens: 30th to 90th
           <div
             class="boton-audio"
-            id="play-random-audio"
+            id="play-all-ordinals-tens"
             tabindex="0"
-            aria-label="Play random ordinal audio"
+            aria-label="Play all ordinal tens"
           >
             <div class="fondo"></div>
             <div class="icono">
@@ -86,30 +51,88 @@
             </div>
             <div class="puntero"></div>
           </div>
-          <input
-            class="typing-input"
-            id="write-quiz-input"
-            type="text"
-            aria-label="Type the ordinal you heard"
-            placeholder="Type the ordinal... (e.g. 1st, 2nd, 3rd)"
-          />
-          <button class="typing-next-btn" id="write-quiz-submit">Check</button>
-          <div class="typing-feedback" id="write-quiz-feedback"></div>
-          <button
-            class="typing-next-btn"
-            id="write-quiz-next"
-            style="display: none"
-          >
-            Next
-          </button>
         </div>
+        <div class="numbers-grid" id="ordinals-tens-grid"></div>
+      </section>
+      <section class="section" aria-labelledby="ordinals-special-title">
+        <div class="section-title" id="ordinals-special-title">
+          Special Ordinals
+          <div
+            class="boton-audio"
+            id="play-all-ordinals-special"
+            tabindex="0"
+            aria-label="Play all special ordinals"
+          >
+            <div class="fondo"></div>
+            <div class="icono">
+              <div class="parte izquierda"></div>
+              <div class="parte derecha"></div>
+            </div>
+            <div class="puntero"></div>
+          </div>
+        </div>
+        <div class="numbers-grid" id="ordinals-special-grid"></div>
       </section>
     </main>
-
-    <footer>
-      <p>&copy; 2025 English Activities. All rights reserved.</p>
-    </footer>
-
+    <!-- Atividade: Ouça e escreva o ordinal -->
+    <section class="section" aria-labelledby="write-title">
+      <div class="section-title" id="write-title">
+        Write the Ordinal You Hear
+      </div>
+      <div class="quiz-box" id="write-quiz-box">
+        <div style="margin-bottom: 0.7rem">
+          <label
+            for="write-quiz-max"
+            style="font-size: 1rem; color: #003466; font-weight: 500"
+            >Max number:&nbsp;</label
+          >
+          <input
+            id="write-quiz-max"
+            type="number"
+            min="1"
+            max="100"
+            value="20"
+            style="
+              width: 100px;
+              font-size: 1rem;
+              padding: 0.2rem 0.5rem;
+              border-radius: 0.4rem;
+              border: 1.5px solid #003466;
+            "
+            aria-label="Set maximum number"
+          />
+        </div>
+        <div
+          class="boton-audio"
+          id="play-random-audio"
+          tabindex="0"
+          aria-label="Play random ordinal audio"
+        >
+          <div class="fondo"></div>
+          <div class="icono">
+            <div class="parte izquierda"></div>
+            <div class="parte derecha"></div>
+          </div>
+          <div class="puntero"></div>
+        </div>
+        <input
+          class="typing-input"
+          id="write-quiz-input"
+          type="text"
+          aria-label="Type the ordinal you heard"
+          placeholder="Type the ordinal... (e.g. 1st, 2nd, 3rd)"
+        />
+        <button class="typing-next-btn" id="write-quiz-submit">Check</button>
+        <div class="typing-feedback" id="write-quiz-feedback"></div>
+        <button
+          class="typing-next-btn"
+          id="write-quiz-next"
+          style="display: none"
+        >
+          Next
+        </button>
+      </div>
+    </section>
     <script src="ordinals.js"></script>
   </body>
 </html>
