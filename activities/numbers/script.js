@@ -107,7 +107,9 @@ function speak(text, onend) {
     utter.rate = playbackRate;
     utter.pitch = 1.1;
     utter.volume = 1;
-    utter.onend = utter.onerror = () => { if (onend) onend(); };
+    utter.onend = utter.onerror = () => {
+      if (onend) onend();
+    };
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utter);
   } else if (onend) {
@@ -316,7 +318,8 @@ function speakWithStop(text, btnId, iconId) {
     utter.volume = 1;
     utter.onend = utter.onerror = () => {
       isSpeaking = false;
-      if (icon) icon.innerHTML = `<svg width='20' height='20' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='14' cy='14' r='13' fill='#fff' stroke='#003466' stroke-width='2'/><polygon points='11,9 20,14 11,19' fill='#003466'/></svg>`;
+      if (icon)
+        icon.innerHTML = `<svg width='20' height='20' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='14' cy='14' r='13' fill='#fff' stroke='#003466' stroke-width='2'/><polygon points='11,9 20,14 11,19' fill='#003466'/></svg>`;
       if (btn) btn.setAttribute("aria-label", "Play audio");
     };
     window.speechSynthesis.cancel();
@@ -330,16 +333,16 @@ function setupModernAudioButton(btnId, playFn, stopFn) {
   let isActive = false;
   let stopCurrent = null;
   function activate() {
-    btn.classList.add('active');
+    btn.classList.add("active");
     isActive = true;
     stopCurrent = playFn(() => {
-      btn.classList.remove('active');
+      btn.classList.remove("active");
       isActive = false;
       stopCurrent = null;
     });
   }
   function deactivate() {
-    btn.classList.remove('active');
+    btn.classList.remove("active");
     isActive = false;
     if (stopCurrent) stopCurrent();
     stopCurrent = null;
@@ -353,10 +356,109 @@ function setupModernAudioButton(btnId, playFn, stopFn) {
     }
   };
   btn.onkeydown = (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === "Enter" || e.key === " ") {
       btn.click();
     }
   };
+}
+
+// Quiz de escrita de números
+let currentNumber = null;
+let isQuizSpeaking = false;
+
+function setupWriteQuiz() {
+  const maxInput = document.getElementById("write-quiz-max");
+  const quizInput = document.getElementById("write-quiz-input");
+  const playBtn = document.getElementById("play-random-audio");
+  const submitBtn = document.getElementById("write-quiz-submit");
+  const nextBtn = document.getElementById("write-quiz-next");
+  const feedback = document.getElementById("write-quiz-feedback");
+
+  function toggleQuizButtonAnimation(button, isPlaying) {
+    if (isPlaying) {
+      button.classList.add("active");
+    } else {
+      button.classList.remove("active");
+    }
+  }
+
+  function playNewNumber() {
+    if (currentNumber) {
+      // Se já houver um número atual, apenas repete o áudio
+      isQuizSpeaking = true;
+      toggleQuizButtonAnimation(playBtn, true);
+      speak(currentNumber.text, () => {
+        isQuizSpeaking = false;
+        toggleQuizButtonAnimation(playBtn, false);
+      });
+      return;
+    }
+
+    // Gera um novo número apenas quando currentNumber for null
+    const max = parseInt(maxInput.value) || 20;
+    const num = Math.floor(Math.random() * max) + 1;
+    currentNumber = {
+      number: num,
+      text: numberToEnglish(num),
+    };
+
+    isQuizSpeaking = true;
+    toggleQuizButtonAnimation(playBtn, true);
+    speak(currentNumber.text, () => {
+      isQuizSpeaking = false;
+      toggleQuizButtonAnimation(playBtn, false);
+    });
+
+    // Reset UI
+    quizInput.value = "";
+    quizInput.disabled = false;
+    submitBtn.style.display = "inline-block";
+    nextBtn.style.display = "none";
+    feedback.textContent = "";
+    feedback.className = "typing-feedback";
+  }
+
+  function checkAnswer() {
+    if (!currentNumber) return;
+
+    const userAnswer = parseInt(quizInput.value);
+
+    if (userAnswer === currentNumber.number) {
+      feedback.textContent = "Correct! 🎉";
+      feedback.className = "typing-feedback success";
+      quizInput.disabled = true; // Desativa o campo apenas se a resposta estiver correta
+      submitBtn.style.display = "none";
+      nextBtn.style.display = "inline-block";
+      currentNumber = null; // Reseta o número atual para permitir um novo na próxima rodada
+    } else {
+      feedback.textContent = "Try again!"; // Não mostra a resposta correta
+      feedback.className = "typing-feedback error";
+      quizInput.disabled = false; // Reativa o campo para permitir nova tentativa
+      submitBtn.style.display = "inline-block";
+      nextBtn.style.display = "none";
+    }
+  }
+
+  // Event Listeners
+  playBtn.onclick = playNewNumber;
+  submitBtn.onclick = checkAnswer;
+  nextBtn.onclick = playNewNumber;
+
+  quizInput.onkeypress = (e) => {
+    if (e.key === "Enter") checkAnswer();
+  };
+
+  // Para quando mudar de página ou fechar
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && isQuizSpeaking) {
+      stopSpeech();
+      isQuizSpeaking = false;
+      toggleQuizButtonAnimation(playBtn, false);
+    }
+  });
+
+  // Start with first number
+  playNewNumber();
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -433,7 +535,8 @@ window.addEventListener("DOMContentLoaded", () => {
       "linear-gradient(135deg,#fbbf24 60%,#c7d2fe 100%)");
   setupModernAudioButton(
     "play-all-numbers",
-    (onend) => playAllNumbers("numbers-learn-grid", numbers, (n) => n.name, onend),
+    (onend) =>
+      playAllNumbers("numbers-learn-grid", numbers, (n) => n.name, onend),
     () => stopSpeech()
   );
   setupModernAudioButton(
@@ -443,7 +546,11 @@ window.addEventListener("DOMContentLoaded", () => {
   );
   setupModernAudioButton(
     "play-all-special",
-    (onend) => playAllNumbers("numbers-special-grid", specials, (n) => n.name, onend),
+    (onend) =>
+      playAllNumbers("numbers-special-grid", specials, (n) => n.name, onend),
     () => stopSpeech()
   );
+
+  // Inicializar o quiz
+  setupWriteQuiz();
 });

@@ -76,7 +76,8 @@ function speakWithStop(text, btnId, iconId) {
     utter.volume = 1;
     utter.onend = utter.onerror = () => {
       isSpeaking = false;
-      if (icon) icon.innerHTML = `<svg width='20' height='20' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='14' cy='14' r='13' fill='#fff' stroke='#003466' stroke-width='2'/><polygon points='11,9 20,14 11,19' fill='#003466'/></svg>`;
+      if (icon)
+        icon.innerHTML = `<svg width='20' height='20' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='14' cy='14' r='13' fill='#fff' stroke='#003466' stroke-width='2'/><polygon points='11,9 20,14 11,19' fill='#003466'/></svg>`;
       if (btn) btn.setAttribute("aria-label", "Play audio");
     };
     window.speechSynthesis.cancel();
@@ -197,83 +198,172 @@ function playAllOrdinals(gridId, dataArr) {
   playNext();
 }
 
+// Funções para controle de animação e áudio dos botões
+let currentAudioSequence = null;
+
+function toggleButtonAnimation(button, isPlaying) {
+  if (isPlaying) {
+    button.classList.add("active");
+  } else {
+    button.classList.remove("active");
+  }
+}
+
+function playSequentialOrdinals(gridId, dataArr, buttonId) {
+  const grid = document.getElementById(gridId);
+  const button = document.getElementById(buttonId);
+
+  // Se já estiver tocando, para a sequência
+  if (currentAudioSequence && currentAudioSequence.isPlaying) {
+    stopCurrentSequence();
+    return;
+  }
+
+  let i = 0;
+  toggleButtonAnimation(button, true);
+
+  currentAudioSequence = {
+    isPlaying: true,
+    stop: () => {
+      currentAudioSequence.isPlaying = false;
+      stopSpeech();
+      clearHighlight(grid);
+      toggleButtonAnimation(button, false);
+    },
+  };
+
+  function playNext() {
+    if (!currentAudioSequence.isPlaying || i >= dataArr.length) {
+      stopCurrentSequence();
+      return;
+    }
+    highlightCard(grid, i);
+    speak(dataArr[i].name);
+    setTimeout(() => {
+      i++;
+      playNext();
+    }, 1200);
+  }
+
+  playNext();
+}
+
+function stopCurrentSequence() {
+  if (currentAudioSequence) {
+    currentAudioSequence.stop();
+    currentAudioSequence = null;
+  }
+}
+
+// Quiz de escrita de ordinais
+let currentOrdinal = null;
+
+function setupWriteQuiz() {
+  const maxInput = document.getElementById("write-quiz-max");
+  const quizInput = document.getElementById("write-quiz-input");
+  const playBtn = document.getElementById("play-random-audio");
+  const submitBtn = document.getElementById("write-quiz-submit");
+  const nextBtn = document.getElementById("write-quiz-next");
+  const feedback = document.getElementById("write-quiz-feedback");
+
+  function playNewOrdinal() {
+    if (currentOrdinal) {
+      // Se já houver um ordinal atual, apenas repete o áudio
+      speak(currentOrdinal.text);
+      return;
+    }
+
+    // Gera um novo ordinal apenas quando currentOrdinal for null
+    const max = parseInt(maxInput.value) || 20;
+    const num = Math.floor(Math.random() * max) + 1;
+    currentOrdinal = {
+      number: num,
+      text: numberToOrdinal(num),
+    };
+    speak(currentOrdinal.text);
+
+    // Reset UI
+    quizInput.value = "";
+    quizInput.disabled = false;
+    submitBtn.style.display = "inline-block";
+    nextBtn.style.display = "none";
+    feedback.textContent = "";
+    feedback.className = "typing-feedback";
+  }
+
+  function checkAnswer() {
+    if (!currentOrdinal) return;
+
+    const userAnswer = quizInput.value.trim().toLowerCase();
+    const correctAnswer = currentOrdinal.text.toLowerCase();
+    const correctSymbol = currentOrdinal.number + currentOrdinal.text.slice(-2).toLowerCase(); // Exemplo: 1st
+
+    if (userAnswer === correctAnswer || userAnswer === correctSymbol) {
+      feedback.textContent = "Correct! 🎉";
+      feedback.className = "typing-feedback success";
+      quizInput.disabled = true; // Desativa o campo apenas se a resposta estiver correta
+      submitBtn.style.display = "none";
+      nextBtn.style.display = "inline-block";
+      currentOrdinal = null; // Reseta o ordinal atual para permitir um novo na próxima rodada
+    } else {
+      feedback.textContent = "Try again!"; // Não mostra a resposta correta
+      feedback.className = "typing-feedback error";
+      quizInput.disabled = false; // Reativa o campo para permitir nova tentativa
+      submitBtn.style.display = "inline-block";
+      nextBtn.style.display = "none";
+    }
+  }
+
+  // Event Listeners
+  playBtn.onclick = playNewOrdinal;
+  submitBtn.onclick = checkAnswer;
+  nextBtn.onclick = playNewOrdinal;
+
+  quizInput.onkeypress = (e) => {
+    if (e.key === "Enter") checkAnswer();
+  };
+
+  // Start with first ordinal
+  playNewOrdinal();
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   renderOrdinalsGrid();
   renderOrdinalsTensGrid();
   renderOrdinalsSpecialsGrid();
-  // Atividade: Ouça e escreva o ordinal
-  let currentRandom = null;
-  let maxRandom = 20;
-  const playBtn = document.getElementById("play-random-audio");
-  const input = document.getElementById("write-quiz-input");
-  const submitBtn = document.getElementById("write-quiz-submit");
-  const feedback = document.getElementById("write-quiz-feedback");
-  const nextBtn = document.getElementById("write-quiz-next");
-  const maxInput = document.getElementById("write-quiz-max");
 
-  function newRandomQuiz() {
-    currentRandom = Math.floor(Math.random() * maxRandom) + 1;
-    feedback.textContent = "";
-    nextBtn.style.display = "none";
-    input.value = "";
-    input.disabled = false;
-    submitBtn.disabled = false;
-  }
-
-  playBtn.onclick = () => {
-    if (currentRandom) speak(numberToOrdinal(currentRandom));
+  // Configurando os botões de play/pause
+  document.getElementById("play-all-ordinals").onclick = () => {
+    playSequentialOrdinals(
+      "ordinals-learn-grid",
+      ordinals,
+      "play-all-ordinals"
+    );
   };
 
-  submitBtn.onclick = () => {
-    if (!currentRandom) return;
-    const val = input.value.trim().toLowerCase();
-    const correct =
-      ordinals.find((o) => o.num === currentRandom)?.short ||
-      currentRandom + "th";
-    if (val === correct.toLowerCase()) {
-      feedback.textContent = "Correct!";
-      feedback.className = "typing-feedback success";
-      input.disabled = true;
-      submitBtn.disabled = true;
-      nextBtn.style.display = "inline-block";
-    } else {
-      feedback.textContent = "Try again!";
-      feedback.className = "typing-feedback error";
+  document.getElementById("play-all-ordinals-tens").onclick = () => {
+    playSequentialOrdinals(
+      "ordinals-tens-grid",
+      ordTens,
+      "play-all-ordinals-tens"
+    );
+  };
+
+  document.getElementById("play-all-ordinals-special").onclick = () => {
+    playSequentialOrdinals(
+      "ordinals-special-grid",
+      ordSpecials,
+      "play-all-ordinals-special"
+    );
+  };
+
+  // Inicializar o quiz
+  setupWriteQuiz();
+
+  // Para quando mudar de página ou fechar
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      stopCurrentSequence();
     }
-  };
-  input.onkeydown = (e) => {
-    if (e.key === "Enter") submitBtn.click();
-  };
-  nextBtn.onclick = () => {
-    newRandomQuiz();
-  };
-  maxInput.onchange = () => {
-    let val = parseInt(maxInput.value, 10);
-    if (isNaN(val) || val < 1) val = 1;
-    if (val > 100) val = 100;
-    maxInput.value = val;
-    maxRandom = val;
-    newRandomQuiz();
-  };
-  // Play/Stop para todos os botões principais
-  function setupPlayStop(btnId, iconId, speakFn) {
-    const btn = document.getElementById(btnId);
-    btn.onclick = () => {
-      if (isSpeaking) {
-        stopSpeech();
-        const icon = document.getElementById(iconId);
-        if (icon) icon.innerHTML = `<svg width='20' height='20' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='14' cy='14' r='13' fill='#fff' stroke='#003466' stroke-width='2'/><polygon points='11,9 20,14 11,19' fill='#003466'/></svg>`;
-        btn.setAttribute("aria-label", "Play audio");
-      } else {
-        speakFn();
-      }
-    };
-  }
-  setupPlayStop("play-all-ordinals", "icon-play-all-ordinals", () => playAllOrdinals("ordinals-learn-grid", ordinals));
-  setupPlayStop("play-all-ordinals-tens", "icon-play-all-ordinals-tens", () => playAllOrdinals("ordinals-tens-grid", ordTens));
-  setupPlayStop("play-all-ordinals-special", "icon-play-all-ordinals-special", () => playAllOrdinals("ordinals-special-grid", ordSpecials));
-  setupPlayStop("play-random-audio", "icon-play-random-audio", () => {
-    if (currentRandom) speakWithStop(numberToOrdinal(currentRandom), "play-random-audio", "icon-play-random-audio");
   });
-  newRandomQuiz();
 });
